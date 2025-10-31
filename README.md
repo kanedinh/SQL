@@ -16,7 +16,44 @@ DROP DATABASE name;
 
 Khi xoá cần ngắt kết nối đến database cần xoá.
 
-## 2. Thao tác với bảng
+## 2. Thao tác với Schema
+
+Schema là tập hợp các đối tượng (objects) trong một cơ sở dữ liệu — gồm:
+
+- Bảng (tables)
+
+- Khung nhìn (views)
+
+- Hàm (functions)
+
+- Thủ tục (stored procedures)
+
+- Chỉ mục (indexes), v.v.
+
+| DBMS                | Có hỗ trợ schema?           | Ghi chú                        |
+| ------------------- | --------------------------- | ------------------------------ |
+| **MySQL / MariaDB** | ✅ Nhưng gọi là **database** | Mỗi *database* = 1 *schema*    |
+| **SQL Server**      | ✅ Có schema thật            | Mặc định là `dbo`              |
+| **PostgreSQL**      | ✅ Có schema thật            | Mặc định là `public`           |
+| **Oracle**          | ✅ Có schema thật            | Mỗi user = 1 schema            |
+| **SQLite**          | ⚠️ Không hỗ trợ schema thật | Toàn bộ nằm trong 1 file `.db` |
+
+Tạo Schema
+
+```sql
+CREATE SCHEMA schema_name;
+```
+
+Xoá Schema
+
+```sql
+DROP SCHEMA schema_name; -- thường chỉ được khi schema trống
+
+-- PostgreSQL thêm CASCADE để xoá luôn các bảng
+DROP SCHEMA schema_name CASCADE
+```
+
+## 3. Thao tác với bảng
 
 ### Tạo bảng (Create)
 
@@ -74,3 +111,29 @@ Mỗi DBMS có các kiểu dữ liệu riêng, nhưng nhìn chung thì chúng đ
 | Logic            | BOOLEAN        | BIT           | BOOLEAN    | (không có) | (không có)     |
 | JSON             | JSON           | NVARCHAR      | JSONB      | JSON       | TEXT           |
 | Tự tăng          | AUTO_INCREMENT | IDENTITY      | SERIAL     | IDENTITY   | AUTOINCREMENT  |
+
+## 4. Truy vấn bảng
+
+### 4.1. Các lệnh cơ bản
+
+![query](./images/sql_query.png)
+*Source: trên ảnh*
+
+Ta thường viết lệnh theo thứ tự:
+
+```FROM -> JOIN -> ON -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY -> LIMIT/TOP/OFFSET```
+
+WHERE sẽ lọc trước khi nhóm, còn HAVING sẽ lọc sau khi nhóm
+
+#### 4.1.1 Các phép JOIN trong SQL
+
+Các phép JOIN thường dùng
+
+![join](./images/join.png)
+*Source: https://www.postgresqltutorial.com/*
+
+Ngoài ra còn có NATURAL JOIN (join dựa trên các cột có cùng tên và kiểu dữ liệu), CROSS JOIN (Tích Descartes)
+
+![cross_join](./images/cross_join.avif)
+
+#### 4.1.2 Điều kiện (WHERE/HAVING)
