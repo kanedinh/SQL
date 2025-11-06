@@ -8,7 +8,7 @@
     - [Tạo bảng (Create)](#tạo-bảng-create)
     - [Xoá bảng (Delete)](#xoá-bảng-delete)
     - [Thay đổi bảng (Alter)](#thay-đổi-bảng-alter)
-  - [Kiểu dữ liệu](#kiểu-dữ-liệu)
+    - [Kiểu dữ liệu](#kiểu-dữ-liệu)
   - [4. Truy vấn bảng](#4-truy-vấn-bảng)
     - [4.1. Các lệnh truy vấn](#41-các-lệnh-truy-vấn)
       - [4.1.1. Các phép JOIN trong SQL](#411-các-phép-join-trong-sql)
@@ -122,7 +122,7 @@ SET column1 = value1,
 WHERE condition;
 ```
 
-## Kiểu dữ liệu
+### Kiểu dữ liệu
 
 Mỗi DBMS có các kiểu dữ liệu riêng, nhưng nhìn chung thì chúng được chia thành các nhóm chính: **Số học, chuỗi, ngày giờ, logic, và các kiểu đặc biệt.**
 
