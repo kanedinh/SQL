@@ -1,5 +1,30 @@
 # Structured Query Language (SQL)
 
+## Table Of Content
+
+  - [1. Thao tác với database](#1-thao-tác-với-database)
+  - [2. Thao tác với Schema](#2-thao-tác-với-schema)
+  - [3. Thao tác với bảng](#3-thao-tác-với-bảng)
+    - [Tạo bảng (Create)](#tạo-bảng-create)
+    - [Xoá bảng (Delete)](#xoá-bảng-delete)
+    - [Thay đổi bảng (Alter)](#thay-đổi-bảng-alter)
+  - [Kiểu dữ liệu](#kiểu-dữ-liệu)
+  - [4. Truy vấn bảng](#4-truy-vấn-bảng)
+    - [4.1. Các lệnh truy vấn](#41-các-lệnh-truy-vấn)
+      - [4.1.1. Các phép JOIN trong SQL](#411-các-phép-join-trong-sql)
+      - [4.1.2. Condition (Điều kiện)](#412-condition-điều-kiện)
+      - [4.1.3. Aggregation (Hàm tổng hợp)](#413-aggregation-hàm-tổng-hợp)
+      - [4.1.4. Subquery (Truy vấn con)](#414-subquery-truy-vấn-con)
+      - [4.1.5. Toán tử tập hợp](#415-toán-tử-tập-hợp)
+    - [4.2. Window Functions](#42-window-functions)
+      - [4.2.1 Window](#421-window)
+      - [4.2.2. Window function](#422-window-function)
+    - [4.3. Common Table Expression (CTE)](#43-common-table-expression-cte)
+      - [4.3.1. CTE](#431-cte)
+      - [4.3.2. Recursive CTE (CTE đệ quy)](#432-recursive-cte-cte-đệ-quy)
+    - [4.4. Một số hàm khác](#44-một-số-hàm-khác)
+
+
 ## 1. Thao tác với database
 
 Ta có tạo (Create)
