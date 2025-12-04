@@ -383,3 +383,33 @@ CAST('100' AS INTEGER)
 ```
 
 TO BE CONTINUE ...
+
+### 4.5. Tối ưu hoá truy vấn (SQL Query Optimization)
+
+Một số kỹ thuật tối ưu hoá truy vấn:
+
+**1. Sử dụng Index:**
+
+**2. Sử dụng SELECT hợp lý:**
+
+**3. Sử dụng LIMIT khi chỉ cần 1 phần dữ liệu:**
+
+**4. Sử dụng phép JOIN hiệu quả:**
+
+**5. Phân tích Query Execution Plans:**
+
+**6. Tối ưu điều kiện WHERE:**
+
+**7. Tối ưu Subquery:**
+
+**8. Sử dụng EXISTS thay vì IN:**
+
+**9. Tránh sử dụng DISTINCT:**
+
+**10. Tận dụng các tính năng dành riêng cho CSDL:**
+
+**11. Tránh GROUP BY / ORDER BY khi không cần thiết:**
+
+**12. Sử dụng UNION ALL thay vì UNION:**
+
+**13. Chia nhỏ truy vấn phức tạp:**
