@@ -384,32 +384,103 @@ CAST('100' AS INTEGER)
 
 TO BE CONTINUE ...
 
-### 4.5. Tối ưu hoá truy vấn (SQL Query Optimization)
+### 4.5. View / Materialized View
+
+#### 4.5.1 View
+
+Là bảng ảo (virtual table) được tạo từ một câu truy vấn
+
+### 4.6. Tối ưu hoá truy vấn (SQL Query Optimization)
 
 Một số kỹ thuật tối ưu hoá truy vấn:
 
 **1. Sử dụng Index:**
 
-**2. Sử dụng SELECT hợp lý:**
+Không có Index → DB phải quét toàn bảng (Table Scan)
 
-**3. Sử dụng LIMIT khi chỉ cần 1 phần dữ liệu:**
+Có Index → DB chỉ tìm đúng vị trí (Index Seek)
 
-**4. Sử dụng phép JOIN hiệu quả:**
+Có 3 loại Index chính:
 
-**5. Phân tích Query Execution Plans:**
+- Clustered Indexes: tự động tạo khi đặt PRIMARY KEY (mỗi bảng chỉ có 1 clustered index). Dữ liệu trong bảng được sắp xếp vật lý theo index này.
+
+- Non-Clustered Indexes: là index tự tạo (mỗi bảng có thể có nhiều non-clustered indexes). Không sắp xếp lại dữ liệu thật và chỉ chứa "con trỏ" đến dòng dữ liệu thật.
+
+```sql
+CREATE INDEX index_customer_id ON customers (customer_id);
+```
+
+- Full-text indexes: tìm kiếm theo từ khoá trong văn bản dài (theo từ, cụm từ, gần đúng, ...). Thường dùng cho mô tả sản phẩm, bài viết, cmt, bài báo, text dài.
+
+```sql
+ALTER TABLE SanPham ADD FULLTEXT(TenSP, MoTa);
+
+SELECT * FROM SanPham
+WHERE MATCH(MoTa) AGAINST('cà phê nguyên chất');
+```
+
+- Ngoài ra còn Composite Index, Hash/B-Tree Index, ...
+
+Lưu ý:
+
+- Sử dụng index lên các cột thường xuyên sử dụng để truy vấn (WHERE, JOIN, ORDER BY, GROUP BY hay các cột có tính phân biệt cao)
+
+- Index sẽ làm chậm đi các thao tác INSERT, UPDATE, DELETE nên ta cần tránh việc này.
+
+- Chọn đúng loại index phù hợp.
+
+**2. Sử dụng SELECT hợp lý:** chỉ lấy các cột cần thiết tránh sử dụng `SELECT *`.
+
+**3. Sử dụng LIMIT khi chỉ cần 1 phần dữ liệu:** dùng LIMIT sẽ giúp giảm đi số dòng trả về, giúp truy vấn nhanh hơn.
+
+**4. Sử dụng phép JOIN hiệu quả:** dùng đúng phép JOIN và chỉ JOIN bảng cần thiết.
+
+- Thứ tự JOINs hợp lý: nên bắt đầu với các bảng trả về ít dòng hơn. Điều này giúp giảm đi lượng data cần để xử lý trong những lần JOINs tiếp theo.
+
+- Sử dụng Indexes lên cột cần JOIN.
+
+- Cân nhắc sử dụng Subqueries hoặc CTEs để đơn gian hoá các phép JOIN phức tạp.
+
+**5. Phân tích Query Execution Plans:** sử dụng hàm EXPLAIN để biết Execution Plans nhằm tránh câu truy vấn tồi.
+
+- Tránh **Full table scan**.
+
+- Chiến lược JOIN kém hiệu quả
+
+- Các vấn đề tiềm ẩn khác.
 
 **6. Tối ưu điều kiện WHERE:**
 
-**7. Tối ưu Subquery:**
+- **Thêm điều kiện lọc vào sớm**: lọc được nhiều dòng nhất có thể ở điều kiện đầu tiên giúp truy vấn chạy nhanh hơn.
 
-**8. Sử dụng EXISTS thay vì IN:**
+- **Tránh sử dụng hàm lên cột**: khi áp dùng hàm, DB phải áp dụng hàm lên từng dòng trong bảng trước khi lọc ra kết quả. Nó sẽ ngăn việc sử dụng Indexes hiệu quả.
 
-**9. Tránh sử dụng DISTINCT:**
+- **Sử dụng toán tử thích hợp**: cần sử dụng toán tử hiệu quả đáp ứng yêu cầu của câu truy vấn. Ví dụ, `=` sẽ nhanh hơn `LIKE`, sử dụng phạm vi ngày cụ thể sẽ tốt hơn dùng hàm như `MONTH(order_date)`
 
-**10. Tận dụng các tính năng dành riêng cho CSDL:**
+**7. Tránh sử dụng Subqueries:**
 
-**11. Tránh GROUP BY / ORDER BY khi không cần thiết:**
+- Thay thế bằng phép JOIN nếu có thể: JOIN thường nhanh hơn và hiệu quả hơn so với Subqueries.
 
-**12. Sử dụng UNION ALL thay vì UNION:**
+- Sử dụng CTEs thay vì Subqueries.
 
-**13. Chia nhỏ truy vấn phức tạp:**
+**8. Sử dụng EXISTS thay vì IN:** thường sử dụng khi làm việc với Subqueries.
+
+**9. Tránh sử dụng DISTINCT:** gây tốn tài nguyên khi xử lý dữ liệu lớn.
+
+- Thay bằng GROUP BY nếu có thể.
+
+- Xử lý trùng lặp dữ liệu ngay từ giai đoạn data cleaning.
+
+**10. Tận dụng các tính năng dành riêng cho CSDL:** mỗi DBMS đều có tính năng riêng của họ.
+
+**11. Tối ưu ORDER BY / GROUP BY:**
+
+- Tránh sử dụng khi không cần thiết.
+
+- Dùng Indexes. Nếu áp dụng nhiều cột → dùng composite index (col1, col2)
+
+- Tổng hợp data trước: dùng Materialized View.
+
+**12. Sử dụng UNION ALL thay vì UNION:** do UNION sẽ thực hiện DISTINCT.
+
+**13. Chia nhỏ truy vấn phức tạp:** dùng Materialized View.
