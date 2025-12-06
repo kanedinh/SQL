@@ -2,28 +2,31 @@
 
 ## Table Of Content
 
-  - [1. Thao tác với database](#1-thao-tác-với-database)
-  - [2. Thao tác với Schema](#2-thao-tác-với-schema)
-  - [3. Thao tác với bảng](#3-thao-tác-với-bảng)
-    - [Tạo bảng (Create)](#tạo-bảng-create)
-    - [Xoá bảng (Delete)](#xoá-bảng-delete)
-    - [Thay đổi bảng (Alter)](#thay-đổi-bảng-alter)
-    - [Kiểu dữ liệu](#kiểu-dữ-liệu)
-  - [4. Truy vấn bảng](#4-truy-vấn-bảng)
-    - [4.1. Các lệnh truy vấn](#41-các-lệnh-truy-vấn)
-      - [4.1.1. Các phép JOIN trong SQL](#411-các-phép-join-trong-sql)
-      - [4.1.2. Condition (Điều kiện)](#412-condition-điều-kiện)
-      - [4.1.3. Aggregation (Hàm tổng hợp)](#413-aggregation-hàm-tổng-hợp)
-      - [4.1.4. Subquery (Truy vấn con)](#414-subquery-truy-vấn-con)
-      - [4.1.5. Toán tử tập hợp](#415-toán-tử-tập-hợp)
-    - [4.2. Window Functions](#42-window-functions)
-      - [4.2.1 Window](#421-window)
-      - [4.2.2. Window function](#422-window-function)
-    - [4.3. Common Table Expression (CTE)](#43-common-table-expression-cte)
-      - [4.3.1. CTE](#431-cte)
-      - [4.3.2. Recursive CTE (CTE đệ quy)](#432-recursive-cte-cte-đệ-quy)
-    - [4.4. Một số hàm khác](#44-một-số-hàm-khác)
-
+- [1. Thao tác với database](#1-thao-tác-với-database)
+- [2. Thao tác với Schema](#2-thao-tác-với-schema)
+- [3. Thao tác với bảng](#3-thao-tác-với-bảng)
+  - [Tạo bảng (Create)](#tạo-bảng-create)
+  - [Xoá bảng (Delete)](#xoá-bảng-delete)
+  - [Thay đổi bảng (Alter)](#thay-đổi-bảng-alter)
+  - [Kiểu dữ liệu](#kiểu-dữ-liệu)
+- [4. Truy vấn bảng](#4-truy-vấn-bảng)
+  - [4.1. Các lệnh truy vấn](#41-các-lệnh-truy-vấn)
+    - [4.1.1. Các phép JOIN trong SQL](#411-các-phép-join-trong-sql)
+    - [4.1.2. Condition (Điều kiện)](#412-condition-điều-kiện)
+    - [4.1.3. Aggregation (Hàm tổng hợp)](#413-aggregation-hàm-tổng-hợp)
+    - [4.1.4. Subquery (Truy vấn con)](#414-subquery-truy-vấn-con)
+    - [4.1.5. Toán tử tập hợp](#415-toán-tử-tập-hợp)
+  - [4.2. Window Functions](#42-window-functions)
+    - [4.2.1 Window](#421-window)
+    - [4.2.2. Window function](#422-window-function)
+  - [4.3. Common Table Expression (CTE)](#43-common-table-expression-cte)
+    - [4.3.1. CTE](#431-cte)
+    - [4.3.2. Recursive CTE (CTE đệ quy)](#432-recursive-cte-cte-đệ-quy)
+  - [4.4. Một số hàm khác](#44-một-số-hàm-khác)
+  - [4.5. View vs Materialized View](#45-view-vs-materialized-view)
+    - [4.5.1. View](#451-view)
+    - [4.5.2. Materialized View](#452-materialized-view)
+  - [4.6. Tối ưu hoá truy vấn (SQL Query Optimization)](#46-tối-ưu-hoá-truy-vấn-sql-query-optimization)
 
 ## 1. Thao tác với database
 
@@ -384,11 +387,66 @@ CAST('100' AS INTEGER)
 
 TO BE CONTINUE ...
 
-### 4.5. View / Materialized View
+### 4.5. View vs Materialized View
 
-#### 4.5.1 View
+#### 4.5.1. View
 
-Là bảng ảo (virtual table) được tạo từ một câu truy vấn
+Là bảng ảo (virtual table) được tạo từ một câu truy vấn để lưu câu truy vấn đó.
+
+Khi bạn SELECT từ view, SQL sẽ chạy lại truy vấn gốc để trả dữ liệu mới nhất.
+
+```sql
+-- Tạo View
+CREATE VIEW view_name AS
+SELECT column1, column2, ...
+FROM table_name
+WHERE condition;
+
+-- Xoá View
+DROP VIEW view_name;
+
+-- Sửa View
+CREATE OR REPLACE VIEW view_name AS
+SELECT ...
+FROM ...
+```
+
+#### 4.5.2. Materialized View
+
+Là bảng được lưu trữ vật lý (lên ổ cứng) dựa trên kết quả của một câu SELECT.
+
+Dữ liệu không tự động cập nhật ngay khi bảng gốc thay đổi.
+
+Phải **REFRESH** để cập nhật dữ liệu mới.
+
+→ Nhanh hơn view thường vì không phải chạy lại câu query mỗi lần SELECT.
+
+```sql
+-- Tạo MV
+CREATE MATERIALIZED VIEW mv_sales_summary AS
+SELECT customer_id, SUM(amount) AS total_amount
+FROM sales
+GROUP BY customer_id;
+
+-- Cập nhật dữ liệu (REFRESH)
+REFRESH MATERIALIZED VIEW mv_sales_summary;
+```
+
+Pros:
+
+- Tăng tốc truy vấn: hữu ích khi JOIN nhiều bảng lớn, tính toán (hàm tổng hợp, hàm cửa sổ, ...), reporting/dashboard/OLAP.
+
+- Giảm tải cho DB: thay vì chạy query nhiều lần thì MV chỉ chạy 1 lần khi REFRESH.
+
+Cons:
+
+- Tốn dung lượng lưu trữ.
+
+- Dữ liệu không real-time: cần REFRESH để cập nhật.
+
+- Phải quản lý REFRESH: REFRESH thường xuyên gây tốn tài nguyên.
+
+Tham khảo: https://www.datacamp.com/tutorial/sql-materialized-view
 
 ### 4.6. Tối ưu hoá truy vấn (SQL Query Optimization)
 
