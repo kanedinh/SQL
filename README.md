@@ -158,7 +158,7 @@ WHERE sẽ lọc trước khi nhóm, còn HAVING sẽ lọc sau khi nhóm
 Các phép JOIN thường dùng
 
 ![join](./images/join.png)
-*Source: https://www.postgresqltutorial.com/*
+*Source: <https://www.postgresqltutorial.com/>*
 
 Ngoài ra còn có NATURAL JOIN (join dựa trên các cột có cùng tên và kiểu dữ liệu), CROSS JOIN (Tích Descartes)
 
@@ -446,7 +446,7 @@ Cons:
 
 - Phải quản lý REFRESH: REFRESH thường xuyên gây tốn tài nguyên.
 
-Tham khảo: https://www.datacamp.com/tutorial/sql-materialized-view
+Tham khảo: <https://www.datacamp.com/tutorial/sql-materialized-view>
 
 ### 4.6. Tối ưu hoá truy vấn (SQL Query Optimization)
 
